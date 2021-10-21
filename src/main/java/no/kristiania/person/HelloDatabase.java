@@ -9,8 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class HelloDatabase {
-    private Person person;
-    private DataSource dataSource;
+
+    private final DataSource dataSource;
 
     public HelloDatabase(DataSource dataSource) {
 
@@ -42,17 +42,32 @@ public class HelloDatabase {
 
     public void save(Person person) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("insert into people (first_name) values (?)")) {
+            try (PreparedStatement statement = connection.prepareStatement("insert into people (first_name) values (?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, (String) person.getFirstName());
-
                 statement.executeUpdate();
+
+                ResultSet rs = statement.getGeneratedKeys();
+                rs.next();
+                person.setId(rs.getLong("id"));
             }
         }
 
-        this.person = person;
     }
 
-    public Person retrieve(long id) {
-        return person;
+    public Person retrieve(long id) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("select * from people where id = ?")) {
+                statement.setLong(1, id);
+                ResultSet rs = statement.executeQuery();
+
+                if(rs.next()) {
+                    Person person = new Person();
+                    person.setFirstName(rs.getString("first_name"));
+                    return person;
+                }
+
+            }
+        }
+        return null;
     }
 }
