@@ -2,12 +2,21 @@ package no.kristiania.person;
 
 import org.postgresql.ds.PGSimpleDataSource;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class HelloDatabase {
+    private Person person;
+    private DataSource dataSource;
+
+    public HelloDatabase(DataSource dataSource) {
+
+        this.dataSource = dataSource;
+    }
+
     public static void main(String[] args) throws SQLException {
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
@@ -31,10 +40,19 @@ public class HelloDatabase {
 
     }
 
-    public void save(Person person) {
+    public void save(Person person) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("insert into people (first_name) values (?)")) {
+                statement.setString(1, (String) person.getFirstName());
+
+                statement.executeUpdate();
+            }
+        }
+
+        this.person = person;
     }
 
     public Person retrieve(long id) {
-        return null;
+        return person;
     }
 }
