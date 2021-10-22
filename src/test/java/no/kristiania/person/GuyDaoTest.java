@@ -18,6 +18,7 @@ public class GuyDaoTest {
         Person person = randomPerson();
         dao.save(person);
         assertThat(dao.retrieve(person.getId()))
+                .hasNoNullFieldsOrProperties()
                 .usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(person);
@@ -36,11 +37,12 @@ public class GuyDaoTest {
     private Person randomPerson() {
         Person person = new Person();
         person.setFirstName(pickOne("Magnus","Bendik","Jonathan","Are","Jamal"));
+        person.setLastName(pickOne("Olsoon", "Berg", "Arnildsen", "Gunnarson", "persson"));
         return person;
 
     }
 
-    private Object pickOne(String... alternatives) {
+    private String pickOne(String... alternatives) {
         return alternatives[new Random().nextInt(alternatives.length)];
     }
 }

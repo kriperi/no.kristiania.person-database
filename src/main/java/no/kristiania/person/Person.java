@@ -3,6 +3,7 @@ package no.kristiania.person;
 public class Person {
     private long id;
     private Object firstName;
+    private String lastName;
 
     public long getId() {
         return id;
@@ -20,11 +21,20 @@ public class Person {
         return firstName;
     }
 
+
     @Override
     public String toString() {
         return "Person{" +
                 "id=" + id +
-                ", firstName=" + firstName +
+                ", firstName=" + firstName + '\'' +
                 '}';
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 }
