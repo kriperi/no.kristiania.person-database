@@ -8,11 +8,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class PersonDao {
+public class GuyDao {
 
     private final DataSource dataSource;
 
-    public PersonDao(DataSource dataSource) {
+    public GuyDao(DataSource dataSource) {
 
         this.dataSource = dataSource;
     }
@@ -63,6 +63,7 @@ public class PersonDao {
 
                 if(rs.next()) {
                     Person person = new Person();
+                    person.setId(rs.getLong("id"));
                     person.setFirstName(rs.getString("first_name"));
                     person.setLastName(rs.getString("last_name"));
                     return person;

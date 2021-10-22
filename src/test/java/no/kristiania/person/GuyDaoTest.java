@@ -11,16 +11,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class GuyDaoTest {
+    //Denne testen oppretter et tilfeldig objekt med tilfeldig fornavn og etternavn, den lagrer det i databasen
+    //Også henter den det opp som et nytt person objekt, men som skal ha de samme verdiene. Også sjekker den at alle
+    //feltene i person objektet er satt slik at vi ikke har glemt å initialisere test dataene mine. Også sjekker den
+    //at alle feltene på objektet vi skrev ned er like de objektene som vi leste opp igjen.
     @Test
     void shouldRetrieveSavedPerson () throws SQLException {
-        PersonDao dao = new PersonDao(createDataSource());
+        GuyDao dao = new GuyDao(createDataSource());
 
         Person person = randomPerson();
         dao.save(person);
         assertThat(dao.retrieve(person.getId()))
                 .hasNoNullFieldsOrProperties()
                 .usingRecursiveComparison()
-                .ignoringFields("id")
                 .isEqualTo(person);
     }
 
